@@ -1,0 +1,6 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+VITE_STRIPE_PUBLIC_KEY=pk_test_51Rf9JqPprHSJapxWHqhrXrlm2oN6QHgc42DyVnv58CkyMeBZZQiB6XJp6sHEMZ9nnwbUdOuZGvM55gbIYUezXQ2n00umyzCCR7

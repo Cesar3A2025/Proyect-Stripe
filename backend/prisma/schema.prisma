@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id               Int      @id @default(autoincrement())
+  name             String
+  stripeCustomerId String   @unique
+  cards            Card[]
+  orders           SalesOrderHeader[]
+  createdAt        DateTime @default(now())
+}
+
+model Card {
+  id              Int      @id @default(autoincrement())
+  clientId        Int
+  paymentMethodId String   @unique
+  brand           String
+  last4           String
+  expMonth        Int
+  expYear         Int
+  client          Client   @relation(fields: [clientId], references: [id])
+  createdAt       DateTime @default(now())
+}
+
+model SalesOrderHeader {
+  id           Int       @id @default(autoincrement())
+  clientId     Int
+  amount       Int       // in cents
+  currency     String
+  payment      Payment?  @relation(fields: [paymentId], references: [id])
+  paymentId    Int?      @unique
+  client       Client    @relation(fields: [clientId], references: [id])
+  stateHistory StateHistory[]
+  createdAt    DateTime  @default(now())
+}
+
+model Payment {
+  id               Int       @id @default(autoincrement())
+  salesOrder       SalesOrderHeader?
+  status           String    // pending, succeeded, failed
+  amount           Int
+  currency         String
+  paymentIntentId  String    @unique
+  chargeId         String?
+  createdAt        DateTime  @default(now())
+}
+
+model StateHistory {
+  id            Int      @id @default(autoincrement())
+  salesOrderId  Int
+  state         String   // pending_payment, paid, failed, etc.
+  timestamp     DateTime @default(now())
+  salesOrder    SalesOrderHeader @relation(fields: [salesOrderId], references: [id])
+}
