@@ -18,7 +18,7 @@ interface Props {
 const SalesTable: React.FC<Props> = ({ sales, onAddClick, onPayClick }) => {
   return (
     <div style={{ padding: "20px 40px", width: "100%" }}>
-      <h2>Cuadro Ventas</h2>
+      <h2>Sales table</h2>
       <button onClick={onAddClick} style={{
           marginBottom: "10px",
           backgroundColor: "#e0e0e0",
@@ -28,19 +28,19 @@ const SalesTable: React.FC<Props> = ({ sales, onAddClick, onPayClick }) => {
           borderRadius: "4px",
           cursor: "pointer",
       }}>
-        + Venta
+        + Sale
       </button>
 
       <table border={1} cellPadding={10} cellSpacing={0} width="100%">
         <thead>
           <tr>
-            <th>Nro</th>
-            <th>Fecha</th>
-            <th>Cliente</th>
+            <th>Number</th>
+            <th>Date</th>
+            <th>Client</th>
             <th>Total</th>
-            <th>Moneda</th>
-            <th>Estado</th>
-            <th>Acción</th>
+            <th>Currency</th>
+            <th>State</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -51,7 +51,7 @@ const SalesTable: React.FC<Props> = ({ sales, onAddClick, onPayClick }) => {
               <td>{sale.clientName}</td>
               <td>${(sale.total / 100).toFixed(2)}</td>
               <td>{sale.currency.toUpperCase()}</td>
-              <td>{sale.status === "pending" ? "Pendiente" : "Pagado"}</td>
+              <td>{sale.status === "pending" ? "Pending" : "Payed"}</td>
               <td>
                 {sale.status === "pending" ? (
                   <button
@@ -65,7 +65,7 @@ const SalesTable: React.FC<Props> = ({ sales, onAddClick, onPayClick }) => {
                       cursor: "pointer",
                     }}
                   >
-                    Pagar
+                    Pay
                   </button>
                 ) : (
                   <span>✔️</span>

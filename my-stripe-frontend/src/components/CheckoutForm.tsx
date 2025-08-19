@@ -88,13 +88,12 @@ export default function CheckoutForm({
             textAlign: "center",
           }}
         >
-          <h3>✅ Pago exitoso</h3>
+          <h3>✅ Payment succesful</h3>
           <p>
-            ¡Gracias! La transacción por ${(amount / 100).toFixed(2)} ha sido
-            procesada.
+            Thanks! The transaction for ${(amount / 100).toFixed(2)} was procesed.
           </p>
           <button onClick={onSuccess} style={{ marginTop: 10 }}>
-            Cerrar
+            Close
           </button>
         </div>
       </div>
@@ -124,18 +123,18 @@ export default function CheckoutForm({
           width: 320,
         }}
       >
-        <h3>Pagar ${(amount / 100).toFixed(2)}</h3>
+        <h3>Pay ${(amount / 100).toFixed(2)}</h3>
         <CardElement options={{ hidePostalCode: true }} />
         {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
         <button type="submit" disabled={!stripe || loading}>
-          {loading ? "Procesando…" : "Confirmar pago"}
+          {loading ? "Processing…" : "Confirm sale"}
         </button>
         <button
           type="button"
           onClick={onCancel}
           style={{ marginLeft: 8, marginTop: 10 }}
         >
-          Cancelar
+          Cancel
         </button>
       </form>
     </div>

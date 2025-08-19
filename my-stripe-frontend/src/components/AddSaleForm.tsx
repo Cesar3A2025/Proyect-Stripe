@@ -31,10 +31,10 @@ export default function AddSaleForm({ onCreate, onCancel }: Props) {
       <form onSubmit={handleSubmit} style={{
         background: "#fff", padding: 20, borderRadius: 8, width: 320,
       }}>
-        <h3>Crear Nueva Venta</h3>
+        <h3>Create new sale</h3>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <div>
-          <label>ID Cliente</label><br/>
+          <label>Client ID</label><br/>
           <input
             type="number"
             value={clientId}
@@ -53,7 +53,7 @@ export default function AddSaleForm({ onCreate, onCancel }: Props) {
           />
         </div>
         <div>
-          <label>Moneda</label><br/>
+          <label>Currency</label><br/>
           <input
             type="text"
             value={currency}
@@ -63,7 +63,7 @@ export default function AddSaleForm({ onCreate, onCancel }: Props) {
         </div>
         <button type="submit" style={{ marginTop: 10 }}>Crear</button>
         <button type="button" onClick={onCancel} style={{ marginLeft: 8, marginTop: 10 }}>
-          Cancelar
+          Cancel
         </button>
       </form>
     </div>
