@@ -37,3 +37,8 @@ C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\refint\ProjectStrip
 C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\ProjectStripe.pdb
 C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\ProjectStripe.genruntimeconfig.cache
 C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\ref\ProjectStripe.dll
+C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\ProjectStripe.sourcelink.json
+C:\laragon\www\ProyectoStripe\ProjectStripe\bin\Debug\net9.0\ProjectStripe.staticwebassets.runtime.json
+C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\ProjectStripe.RazorAssemblyInfo.cache
+C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\ProjectStripe.RazorAssemblyInfo.cs
+C:\laragon\www\ProyectoStripe\ProjectStripe\obj\Debug\net9.0\compressed\ahv3dnh4vm-5uz3dg8ep1.gz

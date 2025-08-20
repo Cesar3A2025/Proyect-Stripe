@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pago con Payment Element</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body{ font-family:system-ui,Segoe UI,Roboto,Arial;
+          margin:0;display:grid;place-items:center;
+          min-height:100vh;
+          background:#0f172a;
+          color:#e2e8f0
+    }
+    .card{background:#111827;
+          padding:28px;
+          border-radius:16px;
+          box-shadow:0 10px 30px rgba(0,0,0,.35);
+          max-width:480px;width:92%
+    }
+    h1{ margin:0 0 12px;
+        font-size:1.25rem
+    }
+    .price{ font-size:1.5rem;
+            font-weight:700;
+            margin:6px 0 18px
+    }
+    #submit{width:100%;
+      padding:14px 16px;
+      border-radius:12px;
+      border:0;font-weight:600;cursor:pointer;
+      background:#2238c5;
+      color:#0b141a
+    }
+    #message{margin-top:10px;
+      min-height:1.2em
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Producto de prueba</h1>
+    <div class="price">$100.99</div>
+    <div id="payment-element"><!-- Stripe Payment Element --></div>
+    <button id="submit">Pagar</button>
+    <div id="message"></div>
+    <p style="opacity:.8;margin-top:12px;font-size:.9rem">
+      Tarjeta de prueba: <code>4242 4242 4242 4242</code> (cualquier fecha y CVC).
+    </p>
+  </div>
+
+  <script>
+    let stripe, elements;
+
+    async function init() {
+      const cfg = await fetch('/config').then(r => r.json());
+      stripe = Stripe(cfg.publishableKey);
+
+      const { clientSecret } = await fetch('/create-payment-intent', { method: 'POST' }).then(r => r.json());
+
+      elements = stripe.elements({ clientSecret, appearance: { theme: 'night' } });
+      const paymentElement = elements.create('payment');
+      paymentElement.mount('#payment-element');
+    }
+
+    async function pay() {
+      document.getElementById('submit').disabled = true;
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: window.location.origin + '/success'
+        }
+      });
+      if (error) {
+        document.getElementById('message').textContent = error.message || 'No se pudo procesar el pago.';
+        document.getElementById('submit').disabled = false;
+      }
+    }
+
+    document.getElementById('submit').addEventListener('click', pay);
+    init();
+  </script>
+</body>
+</html>

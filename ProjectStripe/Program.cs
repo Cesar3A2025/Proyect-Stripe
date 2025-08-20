@@ -1,74 +1,46 @@
+using Microsoft.AspNetCore.Mvc;
 using Stripe;
-using Stripe.Checkout;
-using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
 StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY");
 
+// 2) MVC + Session + DI
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddControllersWithViews();
+builder.Services.AddSession(o =>
+{
+    o.Cookie.Name = ".ProjectStripe.Session";
+    o.IdleTimeout = TimeSpan.FromMinutes(60);
+});
 
-builder.Services.AddOpenApi();
+
+// Servicios propios
+builder.Services.AddSingleton<CatalogService>();
+builder.Services.AddScoped<CartService>();
+builder.Services.AddHttpContextAccessor();
+
+
+// (Opcional) Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 var app = builder.Build();
 
+// Middleware
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseSession();
+
+// (Opcional) Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
-
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/", () => "Stripe + .NET listo");
-
-app.MapPost("/create-checkout-session", () =>
-{
-    var options = new SessionCreateOptions
-    {
-        Mode = "payment",
-        SuccessUrl = "https://localhost:7103/success?session_id={CHECKOUT_SESSION_ID}",
-        CancelUrl = "https://localhost:7103/cancel",
-        LineItems = new List<SessionLineItemOptions>
-        {
-            new()
-            {
-                Quantity = 1,
-                PriceData = new SessionLineItemPriceDataOptions
-                {
-                    Currency = "usd",
-                    UnitAmount = 1999, // 19.99 USD en centavos
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = "Producto de prueba"
-                    }
-                }
-            }
-        }
-    };
-
-    var service = new SessionService();
-    var session = service.Create(options);
-    return Results.Ok(new { url = session.Url });
-});
+// Rutas MVC (por defecto: /Products/Index)
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Products}/{action=Index}/{id?}"
+);
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

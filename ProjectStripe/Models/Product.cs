@@ -1,0 +1,1 @@
+public record Product(int Id, string Name, int UnitAmount, string Currency = "usd", string? ImageUrl = null);

@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Carrito";
+    var items = (IEnumerable<dynamic>)Model;
+    int total = (int)ViewBag.Total;
+}
+<link rel="stylesheet" href="https://unpkg.com/mvp.css" />
+<h1>Carrito</h1>
+
+@if (!items.Any())
+{
+    <p>Tu carrito está vacío.</p>
+    <p><a href="/Products">Volver a productos</a></p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var x in items)
+            {
+                <tr>
+                    <td>@(x.Product?.Name ?? "(desconocido)")</td>
+                    <td>@x.Item.Qty</td>
+                    <td>@String.Format("${0:N2}", ((int)x.LineTotal) / 100.0)</td>
+                    <td>
+                        <form method="post" action="/Cart/Remove" asp-route-id="@x.Item.ProductId"><button>Quitar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="2" style="text-align:right"><strong>Total</strong></td>
+                <td><strong>@String.Format("${0:N2}", total / 100.0)</strong></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <form method="post" action="/Cart/Clear"><button>Vaciar carrito</button></form>
+    <p><a href="/Checkout">Ir a pagar</a></p>
+}
