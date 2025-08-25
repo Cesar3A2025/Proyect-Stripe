@@ -14,7 +14,7 @@ public class CheckoutController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        ViewBag.PublishableKey = Environment.GetEnvironmentVariable("STRIPE_PUBLISHABLE_KEY");
+        ViewBag.PublishableKey = Environment.GetEnvironmentVariable("STRIPE_PUBLISHABLE_KEY_C");
         return View();
     }
 
@@ -30,7 +30,7 @@ public class CheckoutController : Controller
         if (!items.Any()) return BadRequest("El carrito está vacío.");
 
         var currency = items.First().Product.Currency;
-        var amount = items.Sum(x => x.Product.UnitAmount * x.Qty); // centavos
+        var amount = items.Sum(x => x.Product.UnitAmount * x.Qty);
 
         var options = new PaymentIntentCreateOptions
         {
@@ -44,6 +44,7 @@ public class CheckoutController : Controller
 
         return Json(new { clientSecret = intent.ClientSecret });
     }
+
 
     public ContentResult Success() => Content("<h1 style='font-family:sans-serif'>Pago completado</h1>", "text/html");
     public ContentResult Cancel() => Content("<h1 style='font-family:sans-serif'>Pago cancelado</h1>", "text/html");

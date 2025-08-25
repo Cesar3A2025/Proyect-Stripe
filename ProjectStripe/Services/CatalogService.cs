@@ -4,7 +4,9 @@ public class CatalogService
     {
         new Product(1, "Laptop", 1999, "usd"),
         new Product(2, "Auriculares", 6999, "usd"),
-        new Product(3, "Teclado", 12999, "usd")
+        new Product(3, "Teclado", 12999, "usd"),
+        new Product(4, "Celular", 6999, "usd"),
+        new Product(5, "Pantalla", 12999, "usd")
     };
 
     public IEnumerable<Product> All() => _products;

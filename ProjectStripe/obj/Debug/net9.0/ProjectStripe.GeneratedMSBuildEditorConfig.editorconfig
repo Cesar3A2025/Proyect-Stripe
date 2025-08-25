@@ -20,12 +20,20 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/laragon/www/ProyectoStripe/ProjectStripe/Views/Cart/base.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxiYXNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/laragon/www/ProyectoStripe/ProjectStripe/Views/Cart/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxpbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/laragon/www/ProyectoStripe/ProjectStripe/Views/Checkout/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hlY2tvdXRcaW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/laragon/www/ProyectoStripe/ProjectStripe/Views/Products/base.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcYmFzZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/laragon/www/ProyectoStripe/ProjectStripe/Views/Products/index.cshtml]

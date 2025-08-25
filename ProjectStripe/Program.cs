@@ -3,7 +3,7 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
-StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY");
+StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_API_KEY_C");
 
 // 2) MVC + Session + DI
 builder.Services.AddDistributedMemoryCache();
@@ -33,7 +33,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
-// (Opcional) Swagger
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+// Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 

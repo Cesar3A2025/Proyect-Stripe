@@ -1,46 +1,140 @@
 @{
-    ViewData["Title"] = "Carrito";
-    var items = (IEnumerable<dynamic>)Model;
-    int total = (int)ViewBag.Total;
+    ViewData["Title"] = "Checkout";
+    var pk = (string?)ViewBag.PublishableKey;
 }
-<link rel="stylesheet" href="https://unpkg.com/mvp.css" />
-<h1>Carrito</h1>
+<!doctype html>
+<html lang="es">
 
-@if (!items.Any())
-{
-    <p>Tu carrito está vacío.</p>
-    <p><a href="/Products">Volver a productos</a></p>
-}
-else
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var x in items)
-            {
-                <tr>
-                    <td>@x.Product.Name</td>
-                    <td>@x.Item.Qty</td>
-                    <td>@String.Format("${0:N2}", ((int)x.LineTotal) / 100.0)</td>
-                    <td>
-                        <form method="post" action="/Cart/Remove" asp-route-id="@x.Product.Id"><button>Quitar</button></form>
-                    </td>
-                </tr>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Tienda</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Tu tema Amazon-like opcional -->
+    <link href="~/css/style.css" rel="stylesheet" asp-append-version="true" />
+
+    <style>
+        /* Ajustes visuales mínimos para la tarjeta de pago */
+        .checkout-card {
+            max-width: 680px;
+        }
+
+        .payment-box {
+            border: 1px solid #e5e7eb;
+            border-radius: .5rem;
+            padding: 1rem;
+            background: #fff;
+        }
+
+        .msg-minheight {
+            min-height: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- NAVBAR Amazon-like (opcional si ya tienes una en el Layout) -->
+    <nav class="navbar navbar-expand-lg amazon-nav">
+        <div class="container-fluid px-3">
+            <a class="navbar-brand amazon-brand" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-bag-check-fill me-1"></i> Amazón‑Like
+            </a>
+            <div class="collapse navbar-collapse" id="topNav"></div>
+            <a class="btn btn-outline-light" asp-controller="Cart" asp-action="Index">
+                <i class="bi bi-cart3 me-1"></i> Carrito
+            </a>
+        </div>
+    </nav>
+    <div class="amazon-subnav text-white">
+        <div class="container py-2">
+            <strong>Checkout</strong>
+        </div>
+    </div>
+
+    <main class="container my-4 d-flex justify-content-center">
+        <div class="card shadow-sm checkout-card w-100">
+            <div class="card-body">
+                <h1 class="h4 mb-3">Checkout</h1>
+
+                <!-- Alerta si falta PK -->
+                @* (Se rellena también desde JS si falta la PK) *@
+                @if (string.IsNullOrWhiteSpace(pk))
+                {
+                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Falta STRIPE_PUBLISHABLE_KEY (pk_test_...).
+                    </div>
+                }
+
+                <!-- Stripe Payment Element -->
+                <div class="payment-box mb-3">
+                    <div id="payment-element"></div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="d-flex align-items-center gap-3">
+                    <button id="pay" class="btn btn-amz">
+                        <i class="bi bi-credit-card me-1"></i> Pagar
+                    </button>
+
+                    <!-- Mensajes -->
+                    <p id="msg" class="mb-0 text-muted msg-minheight"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-5 py-4 bg-white border-top">
+        <div class="container text-center text-muted small">
+            © @DateTime.Now.Year — Tienda Demo
+        </div>
+    </footer>
+
+    <!-- Stripe JS (igual que tu código) -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Tu JS ORIGINAL (sin cambios funcionales) -->
+    <script>
+        (async () => {
+            try {
+                if (!"@pk") {
+                    document.getElementById("msg").textContent = "Falta STRIPE_PUBLISHABLE_KEY (pk_test_...).";
+                    return;
+                }
+                const stripe = Stripe("@pk");
+                const res = await fetch("/Checkout/CreatePaymentIntent", { method: "POST" });
+                if (!res.ok) throw new Error("Carrito vacío o error creando PaymentIntent.");
+                const { clientSecret } = await res.json();
+                const elements = stripe.elements({ clientSecret });
+                const paymentElement = elements.create("payment");
+                paymentElement.mount("#payment-element");
+                document.getElementById("pay").addEventListener("click", async () => {
+                    document.getElementById("pay").disabled = true;
+
+                    const { error } = await stripe.confirmPayment({
+                        elements,
+                        confirmParams: {
+                            return_url: window.location.origin + "/Checkout/Success"
+                        }
+                    });
+                    if (error) {
+                        document.getElementById("msg").textContent = error.message || "No se pudo procesar el pago.";
+                        document.getElementById("pay").disabled = false;
+                    }
+                });
+            } catch (e) {
+                document.getElementById("msg").textContent = e.message || "Error inicializando el pago.";
             }
-            <tr>
-                <td colspan="2" style="text-align:right"><strong>Total</strong></td>
-                <td><strong>@String.Format("${0:N2}", total / 100.0)</strong></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-    <form method="post" action="/Cart/Clear"><button>Vaciar carrito</button></form>
-    <p><a href="/Checkout">Ir a pagar</a></p>
-}
+        })();
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

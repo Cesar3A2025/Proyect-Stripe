@@ -1,0 +1,42 @@
+.amazon-nav {
+    background-color: #131921;
+}
+
+.amazon-subnav {
+    background-color: #232f3e;
+}
+
+.amazon-brand {
+    color: #fff;
+    font-weight: 700;
+}
+.amazon-brand:hover {
+    color: #ffd814;
+    text-decoration: none;
+}
+
+.amazon-search .form-control {
+    border: none;
+}
+
+.amazon-search .btn {
+    background-color: #febd69;
+    border: none;
+}
+.amazon-search .btn:hover {
+    background-color: #f3a847;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+}
+
+.btn-amz {
+    background-color: #ffd814;
+    color: #0f1111;
+    border: 1px solid #fcd200;
+}
+.btn-amz:hover {
+    background-color: #f7ca00;
+    color: #0f1111;
+}

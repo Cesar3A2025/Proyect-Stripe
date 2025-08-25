@@ -1,0 +1,52 @@
+@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Productos";
+}
+<link rel="stylesheet" href="https://unpkg.com/mvp.css" />
+
+@if (TempData["Added"] is string msg)
+{
+    <p style="color:green">@msg</p>
+}
+
+<body>
+    <Header>
+        <h1>Titulo</h1>
+    </Header>
+    <nav>
+
+    </nav>
+    <main>
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Name</td>
+                            <td>@String.Format("${0:N2}", p.UnitAmount / 100.0)</td>
+                            <td>
+                                <form method="post" action="/Products/AddToCart">
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <input type="number" name="qty" value="1" min="1" style="width:70px" />
+                                    <button type="submit">Agregar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <p><a href="/Cart">Ver carrito</a></p>
+        </section>
+    </main>
+
+</body>

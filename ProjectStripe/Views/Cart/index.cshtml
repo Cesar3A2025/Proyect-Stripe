@@ -1,47 +1,113 @@
+@model IEnumerable<dynamic>
 @{
     ViewData["Title"] = "Carrito";
     var items = (IEnumerable<dynamic>)Model;
     int total = (int)ViewBag.Total;
 }
-<link rel="stylesheet" href="https://unpkg.com/mvp.css" />
-<h1>Carrito</h1>
 
-@if (!items.Any())
-{
-    <p>Tu carrito está vacío.</p>
-    <p><a href="/Products">Volver a productos</a></p>
-}
-else
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var x in items)
-            {
-                <tr>
-                    <td>@(x.Product?.Name ?? "(desconocido)")</td>
-                    <td>@x.Item.Qty</td>
-                    <td>@String.Format("${0:N2}", ((int)x.LineTotal) / 100.0)</td>
-                    <td>
-                        <form method="post" action="/Cart/Remove" asp-route-id="@x.Item.ProductId"><button>Quitar</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-            <tr>
-                <td colspan="2" style="text-align:right"><strong>Total</strong></td>
-                <td><strong>@String.Format("${0:N2}", total / 100.0)</strong></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-    <form method="post" action="/Cart/Clear"><button>Vaciar carrito</button></form>
-    <p><a href="/Checkout">Ir a pagar</a></p>
-}
+<main class="container my-4">
+    <header class="mb-3 d-flex align-items-center justify-content-between">
+        <h1 class="h3 mb-0">Carrito</h1>
+        <a class="btn btn-outline-secondary" href="/Products" asp-action="Index">
+            <i class="bi bi-box-seam me-1"></i> Seguir comprando
+        </a>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Tu CSS personalizado -->
+        <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+        <!-- Bootstrap Icons (si los usas) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    </header>
+
+    @if (!items.Any())
+    {
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            Tu carrito está vacío.
+        </div>
+        <a class="btn btn-amz" href="/Products">
+            <i class="bi bi-arrow-left-short me-1"></i> Volver a productos
+        </a>
+    }
+    else
+    {
+        <section class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center" style="width:120px;">Cantidad</th>
+                                <th class="text-end" style="width:160px;">Subtotal</th>
+                                <th class="text-center" style="width:140px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var x in items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded bg-secondary-subtle me-3"
+                                                style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
+                                                <i class="bi bi-box-seam fs-4 text-secondary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">@(x.Product?.Name ?? "(desconocido)")</div>
+                                                <div class="text-muted small">ID: @x.Item.ProductId</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span class="badge text-bg-light px-3 py-2">@x.Item.Qty</span>
+                                    </td>
+
+                                    <td class="text-end">
+                                        @String.Format("${0:N2}", ((int)x.LineTotal) / 100.0)
+                                    </td>
+
+                                    <td class="text-center">
+                                        <form asp-controller="Cart" action="/Cart/Remove" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@x.Item.ProductId" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash3 me-1"></i> Quitar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                            <tr class="table-light">
+                                <td colspan="2" class="text-end">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="text-end">
+                                    <strong>@String.Format("${0:N2}", total / 100.0)</strong>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-3 d-flex justify-content-between">
+            <form asp-controller="Cart" action="/Cart/Clear" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-cart-x me-1"></i> Vaciar carrito
+                </button>
+            </form>
+
+            <a class="btn btn-amz" href="/Checkout">
+                <i class="bi bi-credit-card me-1"></i> Ir a pagar
+            </a>
+        </section>
+    }
+</main>

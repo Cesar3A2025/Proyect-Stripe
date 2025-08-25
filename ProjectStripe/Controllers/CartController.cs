@@ -12,10 +12,6 @@ public class CartController : Controller
     }
     public IActionResult Index()
     {
-        // (debug opcional)
-        var ping = HttpContext.Session.GetString("ping");
-        Console.WriteLine($"Session ping = {ping}");
-
         var items = _cart.Get()
             .Select(i => new
             {
